@@ -18,7 +18,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div v-bind='$attrs'>
     <div v-text="form.book"></div>
     <div v-text="form.auth"></div>
     <div v-text="form.pages"></div>

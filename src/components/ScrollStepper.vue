@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watchEffect, markRaw } from 'vue'
+import { ref, reactive, watchEffect, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   // stepper 弹窗宽度
@@ -20,14 +20,14 @@ const props = defineProps({
   // stepper 项们
   stepItems: {
     type: Array,
-    default: function() {
+    default: () => {
       return []
     }
   },
   // 详情 项们
   detailItems: {
     type: Array,
-    default: function() {
+    default: () => {
       return []
     }
   },
@@ -35,6 +35,13 @@ const props = defineProps({
   hasDetail: {
     type: Boolean,
     default: false
+  },
+  // 获取 初始外部表单数据 方法
+  getCtxFormData: {
+    type: Function,
+    default: resolve => {
+      resolve({})
+    }
   }
 })
 
@@ -44,15 +51,31 @@ const curStepRef = ref('')
 const curDetailRef = ref('')
 const errorMsgRef = ref('')
 const errorNum = reactive({})
-const ctxFormData = reactive({})
+let ctxFormData = reactive({})
 const stepsInstance = reactive({})
 
-watchEffect(() => {
-  if (props.stepItems.length > 0) {
-    props.stepItems.forEach((step)=> {
-      console.log('ddd', props.stepItems.length, stepsInstance)
-    })
+function useChangeMainLoading(bool) {
+  isMainLoadingRef.value = bool
+  return {
+    isMainLoadingRef
   }
+}
+
+function syncFormInitVal() {
+  const formData = {}
+  debugger
+  Object.keys(stepsInstance).forEach(key => {
+    const compForm = stepsInstance.key?.form ?? {}
+    Object.keys(compForm).forEach(item => {
+      ctxFormData.item = compForm.item
+    })
+  })
+  ctxFormData = formData
+  console.log('改变', ctxFormData)
+}
+
+watchEffect(() => {
+  console.log('ddddddd', ctxFormData)
 })
 
 /**
@@ -60,7 +83,15 @@ watchEffect(() => {
  * @param bool
  */
 function openStepper(bool) {
+  useChangeMainLoading(true)
   visibleRef.value = true
+  new Promise(props.getCtxFormData).then(data => {
+    nextTick(() => {
+      syncFormInitVal()
+    })
+  }).finally(() => {
+    useChangeMainLoading(false)
+  })
 }
 
 /**
@@ -102,7 +133,6 @@ defineExpose({
 <template>
   <div>
     <vxe-modal class-name="scroll-stepper"
-              ref="scrollStepper"
               v-model="visibleRef"
               :width="width"
               :height="height"
@@ -119,7 +149,8 @@ defineExpose({
       <!--  content 开始  -->
       <div class="flex stepper-main" v-loading="isMainLoadingRef" v-if='visibleRef'>
         <ul class="tab-con">
-          <li v-for="(step, index) in props.stepItems"
+          <li v-for="step in props.stepItems"
+              :key="step.name"
               class="{'active-custom': curStepRef === step.name}">
             <span class="float-center-aligned">
               <i :class="'iconfont ' + step.stepIcon"></i>
@@ -134,9 +165,9 @@ defineExpose({
                        wrap-class="el-select-dropdown__wrap"
                         view-class="el-select-dropdown__list">
             <div class="comp-wrap" :class="{'has-detail': props.hasDetail}">
-              <component v-for="(comp, index) in props.stepItems"
-                         :ref="el => { if (el) stepsInstance[''+comp.name] = el}"
+              <component v-for="comp in props.stepItems"
                          :key="comp.name"
+                         :ref="el => { if (el) stepsInstance[comp.name] = el}"
                          :is="comp"
                          :title-high-lighting="curStepRef === comp.name"
                          :drawer-switch="openDrawer"
@@ -161,12 +192,12 @@ defineExpose({
       <template #footer v-if="visibleRef">
         <div class="flex footer" :class="{'justify-content-end': !errorMsgRef}">
           <span class="error-msg" v-show="errorMsgRef" v-text="errorMsgRef"></span>
-        </div>
-        <div class="buttons-operation">
-          <slot name="footer-btn" :fun="{ 'cancel': closeStepper, 'confirm': finishStepper }">
-            <i-button type="primary" class="mr15" @click="finishStepper" :disabled="isMainLoadingRef">完成</i-button>
-            <i-button @click="closeStepper">取消</i-button>
-          </slot>
+          <div class="buttons-operation">
+            <slot name="footer-btn" :fun="{ 'cancel': closeStepper, 'confirm': finishStepper }">
+              <i-button type="primary" class="mr15" @click="finishStepper" :disabled="isMainLoadingRef">完成</i-button>
+              <i-button @click="closeStepper">取消</i-button>
+            </slot>
+          </div>
         </div>
       </template>
       <!--  stepper 底部开始  -->
@@ -183,6 +214,7 @@ defineExpose({
   background-color: #fff !important;
 }
 :deep(.scroll-stepper .vxe-modal--footer){
+  padding: .8em 1em .8em 1em;
   border-top: 1px solid #D7DDE4
 }
 .flex {
