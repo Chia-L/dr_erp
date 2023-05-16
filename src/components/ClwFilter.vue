@@ -299,6 +299,9 @@ function popHide() {
     width: 45px;
     color: #17A2BB;
 }
+.clw-filter .inputWrap .tailWrap span{
+    width: 30px;
+}
 .filter-popover {
     margin-top: 2px!important;
 }

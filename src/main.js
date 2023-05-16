@@ -19,8 +19,17 @@ function useVxeTable (app) {
   app.use(VXETable)
 }
 
+import 'vxe-table/lib/style.css'
+import '@/assets/iconfont/iconfont.css'
+import '@/assets/iconfont/iconfont.js'
+import '@/assets/iconfont/iconfont.ttf'
+import '@/assets/iconfont/iconfont.woff'
+
 import 'view-ui-plus/dist/styles/viewuiplus.css'
 import ViewUIPlus from 'view-ui-plus'
+
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 const app = createApp(App)
 
@@ -28,5 +37,6 @@ app.use(createPinia())
   .use(router)
   .use(useVxeTable)
   .use(ViewUIPlus)
+  .use(ElementPlus)
 
 app.mount('#app')
