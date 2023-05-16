@@ -19,7 +19,6 @@ function useVxeTable (app) {
   app.use(VXETable)
 }
 
-import 'vxe-table/lib/style.css'
 import '@/assets/iconfont/iconfont.css'
 import '@/assets/iconfont/iconfont.js'
 import '@/assets/iconfont/iconfont.ttf'
