@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, markRaw, watch, computed, nextTick, onBeforeUnmount } from 'vue'
 import { throttle, cloneDeep, assignIn } from 'lodash'
-import { hasOwnProperty, isNumber } from '@/utils/tools'
+import { hasOwnProperty, isNumber, returnType } from '@/utils/tools'
 
 const props = defineProps({
   // stepper 弹窗宽度
@@ -97,8 +97,6 @@ const scrollHeightRef = ref(0)
 const drawerInsRef = ref(null)
 // 当前抽屉数据
 const drawerConRef = ref({})
-// 抽屉底部按钮
-const defineBtnRef = ref([])
 
 /* compted */
 const drawerWith = computed(() => {
@@ -113,6 +111,11 @@ const drawerHeight = computed(() => {
 })
 let hasDetail = computed(() => {
   return !!curDetailRef.value
+})
+// 抽屉底部按钮
+let defineBtnRef = computed(() => {
+  let a = (props.drawerItems[curStepRef.value]?.defineButtonBtn) ?? []
+  return a
 })
 
 /* watch */
@@ -466,19 +469,11 @@ function openDetail(data) {
  * 打开抽屉
  */
 function openDrawer(bool, params={}) {
-  defineBtnRef.value = params.defineBottonBtn || []
   if(bool) drawerConRef.value = assignIn(params || {}, {ctxFormData: ctxFormData, curCompCtx: stepsInstance[curStepRef.value]})
   nextTick(() => {
-    const prom = drawerInsRef.value && params && params.drawerBtnType && drawerInsRef.value[params.drawerBtnType](drawerConRef)
     if (bool) {
-      let onShow = drawerConRef.value?.onShow
+      let onShow = drawerInsRef.value?.onShow
       if (typeof onShow === "function") onShow()
-    }
-    if (!bool && (prom instanceof Promise)) {
-      prom.then(() => {
-        drawerVisibleRef.value = bool
-      })
-      return
     }
     drawerVisibleRef.value = bool
   })
@@ -488,8 +483,25 @@ function openDrawer(bool, params={}) {
  * 关闭抽屉
  */
 function drawerClose() {
+  onDrawerClose(false, {btnType: 'cancel'})
+}
+
+function onDrawerClose(bool, params) {
   drawerConRef.value = {}
-  openDrawer(false, {btnType: 'cancel'})
+  if (!bool) {
+    const drawerIns = drawerInsRef.value
+    const btnType = (params && params.drawerBtnType) || ''
+    const isFun = drawerIns && btnType && returnType(drawerIns[btnType]) === "function"
+    let pm = null
+    if (isFun) pm = drawerIns[btnType](drawerConRef)
+    if (pm instanceof Promise) {
+      pm.then((ems) => {
+        openDrawer(bool)
+      })
+      return
+    }
+  }
+  openDrawer(bool)
 }
 
 /**
@@ -614,13 +626,13 @@ defineExpose({
               <div class="drawer-btn"
                    v-if="typeof drawerConRef.hasBottonBtn === 'boolean' ? drawerConRef.hasBottonBtn : true">
                 <i-button type="primary"
-                          @click="openDrawer(false, {drawerBtnType: 'cancel'})"
+                          @click="onDrawerClose(false, {drawerBtnType: 'cancel'})"
                           v-if="!defineBtnRef.length">关闭</i-button>
                 <div v-else>
                   <i-button v-for="(btn,index) in defineBtnRef"
                             :type="btn.type"
                             class="drawer-btn-item"
-                            @click="openDrawer(false, {drawerBtnType: btn.drawerBtnType})">
+                            @click="onDrawerClose(false, {drawerBtnType: btn.drawerBtnType})">
                     <span v-text="btn.text"></span>
                   </i-button>
 

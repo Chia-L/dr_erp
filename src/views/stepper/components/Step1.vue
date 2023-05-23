@@ -55,12 +55,7 @@ function onCheckFormData() {
   })
 }
 function click() {
-  props.openDrawer(true, {
-    defineBottonBtn: [
-      {type: 'text', text: '取消', drawerBtnType: 'cancel'},
-      {type: 'primary', text: '确定', drawerBtnType: 'confirm'}
-    ]
-  })
+  props.openDrawer(true)
 }
 
 defineExpose({
