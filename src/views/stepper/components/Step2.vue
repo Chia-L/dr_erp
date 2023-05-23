@@ -8,8 +8,20 @@ export default defineComponent({
 </script>
 <script setup>
 import { reactive } from 'vue'
+defineProps({
+  titleHighLighting: {
+    type: Boolean,
+    default: false
+  },
+  detailSwitch: {
+    type: Function,
+    default: function() {
+
+    }
+  }
+})
 const form = reactive({
-  name: '朱自清',
+  xm: '朱自清',
   sex: 'M',
   age: 44
 })
@@ -20,11 +32,14 @@ defineExpose({
 
 <template>
   <div>
-    <div v-text="form.name"></div>
-    <div v-text="form.sex"></div>
-    <div v-text="form.age"></div>
+    <div class='h200' v-text="form.xm"></div>
+    <div class='h200' v-text="form.sex"></div>
+    <div class='h200' v-text="form.age"></div>
   </div>
 </template>
 
 <style scoped>
+.h200 {
+  height: 200px;
+}
 </style>

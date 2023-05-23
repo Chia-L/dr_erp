@@ -10,6 +10,10 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@formily/core": "^2.2.24",
+    "@formily/element-plus": "^1.1.0-beta.0",
+    "@formily/vue": "^2.2.24",
+    "axios": "^1.4.0",
     "element-plus": "^2.3.4",
     "lodash": "^4.17.21",
     "pinia": "^2.0.35",
