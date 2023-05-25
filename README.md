@@ -13,6 +13,12 @@ v9.5.1
 
 #拉取依赖
 npm i
+
+#开发环境
+npm run dev
+
+#联调环境
+npm run dock
 ```
 
 ### 规定约束

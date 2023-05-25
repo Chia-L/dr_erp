@@ -5,7 +5,7 @@ import Step2 from '@/views/stepper/components/Step2.vue'
 import DetailStep1 from '@/views/stepper/components/DetailStep1.vue'
 import DetailStep2 from '@/views/stepper/components/DetailStep2.vue'
 import DrawerStep1 from '@/views/stepper/components/DrawerStep1.vue'
-import { ref, reactive, markRaw } from 'vue'
+import { ref } from 'vue'
 
 const stepper = ref(null)
 const a = ref(null)
