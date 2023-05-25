@@ -4,20 +4,21 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+// view-design
+import 'view-ui-plus/dist/styles/viewuiplus.css'
+import ViewUIPlus from 'view-ui-plus'
+
+// element
+import 'element-plus/dist/index.css'
+import ElementPlus from 'element-plus'
+
 // vxe-table
 import 'xe-utils'
-/*import { Button, Modal } from 'vxe-table'
-function useVxeTable (app) {
-  // 可选组件
-  app.use(Button)
-    .use(Modal)
-}*/
-import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
+import VXETable from 'vxe-table'
 
-function useVxeTable (app) {
-  app.use(VXETable)
-}
+// 自适应
+import "amfe-flexible/index.js";
 
 import '@/assets/iconfont/iconfont.css'
 import '@/assets/iconfont/iconfont.js'
@@ -27,15 +28,21 @@ import '@/assets/iconfont/iconfont.woff'
 import 'view-ui-plus/dist/styles/viewuiplus.css'
 import ViewUIPlus from 'view-ui-plus'
 
+//element-plus ResizeObserver 低版本浏览器的兼容
+import ResizeObserver from 'resize-observer-polyfill'
+window.ResizeObserver = ResizeObserver
+
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 const app = createApp(App)
 
+app.use(ViewUIPlus)
+app.use(ElementPlus)
+app.use(VXETable)
+
 app.use(createPinia())
   .use(router)
-  .use(useVxeTable)
-  .use(ViewUIPlus)
   .use(ElementPlus)
 
 app.mount('#app')

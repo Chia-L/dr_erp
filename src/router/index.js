@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Test from '@/views/stepper/Test.vue'
+import Base from '@/views/Base.vue'
 import SqGridDemo from '@/views/SqGridDemo/index.vue'
 
 const router = createRouter({
@@ -7,8 +8,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Test',
-      component: Test
+      name: 'Base',
+      component: Base
     },
     {
       path: '/sq_grid_demo',
