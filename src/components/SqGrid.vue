@@ -1,49 +1,45 @@
 <template>
   <div class="r-table-business-logic">
     <vxe-grid
-      ref="myGrid"
-      class="clw-vxe-table"
-      auto-resize
-      highlight-hover-row
-      highlight-current-row
-      show-footer
-      v-loading="loading"
-      :data="gridData"
-      :row-class-name="rowClassName"
-      :cell-class-name="cellClass"
-      :header-row-class-name="headerRowClass"
-      :align="align"
-      :height="height"
-      :stripe="stripe"
-      :resizable="resizable"
-      :show-overflow="showOverflow"
-      :row-config="rowConfig"
-      :columns="colsCfg"
-      :tooltip-config="tooltipConfig"
-      :pager-config="pagerConfig"
-      :sort-config="sortConfig"
-      :checkbox-config="checkboxConfig"
-      @current-change="_currentChanged"
-      @checkbox-change="_checkboxClicked"
-      @checkbox-all="_checkboxClicked"
-      @cell-dblclick="cellDblClick"
-      @cell-mouseenter="cellMouseenter"
-      @cell-mouseleave="cellMouseleave"
-      @sort-change="_sortChanged"
-      @page-change="_pagerChanged"
-      v-bind="$attrs">
+        ref="myGrid"
+        class="clw-vxe-table"
+        auto-resize
+        highlight-hover-row
+        highlight-current-row
+        v-loading="loading"
+        :data="gridData"
+        :row-class-name="rowClassName"
+        :cell-class-name="cellClass"
+        :header-row-class-name="headerRowClass"
+        :align="align"
+        :height="height"
+        :stripe="stripe"
+        :resizable="resizable"
+        :show-overflow="showOverflow"
+        :row-config="rowConfig"
+        :columns="colsCfg"
+        :tooltip-config="tooltipConfig"
+        :pager-config="pagerCfg"
+        :sort-config="sortConfig"
+        :checkbox-config="checkboxConfig"
+        @current-change="_currentChanged"
+        @checkbox-change="_checkboxClicked"
+        @checkbox-all="_checkboxClicked"
+        @cell-dblclick="cellDblClick"
+        @cell-mouseenter="cellMouseenter"
+        @cell-mouseleave="cellMouseleave"
+        @sort-change="_sortChanged"
+        @page-change="_pagerChanged"
+        v-bind="$attrs">
       <template v-for="name in myGridSlots" #[name]="scope">
-        <slot :name="name" :p="scope"></slot>
-      </template>
-      <template #base_func_default="{ row }">
-        <span v-html="row.base_func"></span>
+        <slot :name="name" :p="scope" :key="name"></slot>
       </template>
     </vxe-grid>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, defineExpose } from 'vue'
 
 // 声明props
 const props = defineProps({
@@ -77,43 +73,43 @@ const props = defineProps({
   },
   headerRowClass: {
     type: [ String, Function ],
-    default: function _default() {
+    default() {
       return ''
     }
   },
   colsCfg: {
     type: Array,
-    default: function _default() {
+    default() {
       return []
     }
   },
   gridData: {
     type: Array,
-    default: function _default() {
+    default() {
       return []
     }
   },
   myGridSlots: {
     type: Array,
-    default: function _default() {
+    default() {
       return []
     }
   },
   defaultGridSelect: {
     type: Array,
-    default: function () {
+    default() {
       return []
     }
   },
   sortConfig: {
     type: Object,
-    default: function _default() {
+    default() {
       return { iconAsc: '', iconDesc: '', remote: false }
     }
   },
   pagerCfg: {
     type: Object,
-    default: function _default() {
+    default() {
       return {
         enabled: false
       }
@@ -121,7 +117,7 @@ const props = defineProps({
   },
   checkboxConfig: {
     type: Object,
-    default: function () {
+    default() {
       return { checkRowKeys: [] }
     }
   },
@@ -139,17 +135,17 @@ const props = defineProps({
   },
   cellDblClick: {
     type: Function,
-    default: function () {
+    default() {
     }
   },
   cellMouseenter: {
     type: Function,
-    default: function () {
+    default() {
     }
   },
   cellMouseleave: {
     type: Function,
-    default: function () {
+    default() {
     }
   },
   rowClassName: {
@@ -160,13 +156,13 @@ const props = defineProps({
   },
   fetchData: {
     type: Function,
-    default: function () {
+    default() {
       return null
     }
   },
   cellClass: {
     type: Function,
-    default: function _default() {
+    default() {
       return ''
     }
   },
@@ -175,24 +171,24 @@ const emit = defineEmits([ 'change-sort', 'change-page', 'change-checkbox' ])// 
 const myGrid = ref(null)// 当前表格引用
 const checkedRows = ref([])
 // 页码配置项
-let initPagerConfig = {
-  total: 0,
-  currentPage: 1,
-  pageSize: 10,
-  pagerCount: 5,
-  align: 'left',
-  pageSizes: [ 10, 20, 50 ],
-  layouts: [ 'Sizes', 'PrevPage', 'Number', 'NextPage', 'FullJump', 'Total' ],
-  perfect: true,
-  autoHidden: false
-}
-const pagerConfig = ref(Object.assign(initPagerConfig, props.pagerCfg))
-
-
-// 侦听
-watch(props.pagerCfg, (newVal) => {
-  pagerConfig.value = Object.assign(pagerConfig.value, newVal)
-})
+// let initPagerConfig = {
+//   total: 0,
+//   currentPage: 1,
+//   pageSize: 10,
+//   pagerCount: 5,
+//   align: 'left',
+//   pageSizes: [ 10, 20, 50 ],
+//   layouts: [ 'Sizes', 'PrevPage', 'Number', 'NextPage', 'FullJump', 'Total' ],
+//   perfect: true,
+//   autoHidden: false
+// }
+// const pagerConfig = ref(Object.assign({}, initPagerConfig, props.pagerCfg))
+//
+//
+// // 侦听
+// watch(props.pagerCfg, (newVal) => {
+//   pagerConfig.value = Object.assign({}, pagerConfig.value, newVal)
+// })
 
 // 处理排序改变
 function _sortChanged(_ref) {
@@ -203,11 +199,11 @@ function _sortChanged(_ref) {
 
 // 处理分页改变
 function _pagerChanged(_ref) {
-  let pageSize = _ref.pageSize
-  pagerConfig.value.currentPage = _ref.currentPage
-  pagerConfig.value.pageSize = pageSize
+  // let pageSize = _ref.pageSize
+  // pagerConfig.value.currentPage = _ref.currentPage
+  // pagerConfig.value.pageSize = pageSize
   // 发送回当前页与每页大小
-  emit('change-page', { currentPage: _ref.currentPage, pageSize: pageSize })
+  emit('change-page', { currentPage: _ref.currentPage, pageSize: _ref.pageSize })
   props.fetchData()
 }
 
@@ -225,6 +221,10 @@ function _checkboxClicked(_ref7) {
   emit('change-checkbox', _ref7.records)
   myGrid.value.clearCurrentRow()
 }
+
+defineExpose({
+  myGrid
+})
 </script>
 
 <style scoped>
