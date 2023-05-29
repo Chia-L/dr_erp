@@ -1,6 +1,4 @@
 const login = require('./template/login')
-const apiArr = [
+module.exports = [
   ...login
 ]
-
-export {apiArr}
