@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { assignIn } from 'lodash'
 
 /**
  * 重试管理类
@@ -36,14 +37,22 @@ class RetryCnt {
   }
 }
 
-function httpHelper(url, method, data, params, config) {
+/**
+ *
+ * @param url 请求地址
+ * @param method 方法
+ * @param data 数据
+ * @param params 回调使用的参数
+ * @param config axios配置
+ * @returns {Promise<unknown>}
+ */
+function httpHelper(url, method, data, params, config={}) {
   const baseUrl =  import.meta.env.VITE_BASE_URL || ''
   url = baseUrl + url
-  console.log('ddd', url)
   const key = method + '_' + url
   const retryCnt = new RetryCnt
   let timer = null
-  const options = {
+  let options = {
     url: url,
     method: method,
     params:['GET', 'DELETE'].includes(method.toString().toUpperCase()) ? data : null,
@@ -52,6 +61,7 @@ function httpHelper(url, method, data, params, config) {
     xsrfCookieName: 'csrftoken',
     xsrfHeaderName: 'X-CSRFToken'
   }
+  options = assignIn({}, options, config)
 
   // 处理重试，间隔 2 秒，重试 5 次
   function retryFetch() {
@@ -117,7 +127,7 @@ function httpHelper(url, method, data, params, config) {
     axios(options)
       .then(res => {
         retryCnt.clearCnt(key)
-        resolve(res.data, res, axios.defaults)
+        resolve(res.data, params, res, axios.defaults)
       })
       .catch(e => {
         handleException(e)
