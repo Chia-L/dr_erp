@@ -4,14 +4,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// view-design
-import 'view-ui-plus/dist/styles/viewuiplus.css'
-import ViewUIPlus from 'view-ui-plus'
-
-// element
-import 'element-plus/dist/index.css'
-import ElementPlus from 'element-plus'
-
 // vxe-table
 import 'xe-utils'
 import 'vxe-table/lib/style.css'
@@ -43,6 +35,5 @@ app.use(VXETable)
 
 app.use(createPinia())
   .use(router)
-  .use(ElementPlus)
 
 app.mount('#app')

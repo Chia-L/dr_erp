@@ -1,4 +1,5 @@
 <script setup>
+import PlanManage from '@/views/PlanManage/PlanManage.vue'
 import { httpHelper } from '@/utils/axios.js'
 httpHelper('/api/account/token/', 'post').then(function(e) {
   console.log('dddd', e)
@@ -9,9 +10,11 @@ httpHelper('/api/account/token/', 'post').then(function(e) {
   <div class="clw-view">
     <section class="clw-container is-vertical">
       <header class="clw-header"></header>
-      <section class="clw-container">
+      <section class="clw-container is-allcontent">
         <aside class="clw-aside"></aside>
-        <main class="clw-main"></main>
+        <main class="clw-main">
+          <PlanManage/>
+        </main>
       </section>
     </section>
   </div>
@@ -22,7 +25,10 @@ httpHelper('/api/account/token/', 'post').then(function(e) {
   width: 100vw;
   height: 100vh;
   min-width: 1360px;
-  min-height: 860px;
+  //min-height: 860px;
+  .is-allcontent {
+
+  }
   section {
     height: 100%;
   }
@@ -50,6 +56,7 @@ httpHelper('/api/account/token/', 'post').then(function(e) {
       display: flex;
       flex: 1;
       flex-basis: auto;
+      width: calc(100% - 240px);
     }
   }
   .is-vertical {
