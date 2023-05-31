@@ -1,0 +1,30 @@
+/*浏览器：Chrome、Edge、Safari */
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 12px; /* scrollbar-y */
+  height: 12px; /* scrollbar-x */
+}
+
+/* scrollbar-track */
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* scrollbar-thumb */
+::-webkit-scrollbar-thumb {
+  border: 4px solid rgba(0, 0, 0, 0); /* 模拟 padding 效果（content = 12 - 4 * 2） */
+  border-radius: 12px;
+  background-color: #909399;
+  background-clip: content-box;
+}
+
+/* scrollbar-corner */
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/*（2）浏览器：Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #909399 transparent;
+}

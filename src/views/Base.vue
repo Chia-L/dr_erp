@@ -36,7 +36,6 @@ httpHelper('/api/account/token/', 'post').then(function(e) {
     display: flex;
     flex-direction: row;
     flex: 1;
-    flex-basis: auto;
     box-sizing: border-box;
     .clw-header {
       display: flex;

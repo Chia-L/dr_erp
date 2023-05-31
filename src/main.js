@@ -25,6 +25,8 @@ import '@/assets/iconfont/iconfont.woff'
 // 自适应
 import "amfe-flexible/index.js";
 
+import "/src/assets/css/comm.css"
+
 //element-plus ResizeObserver 低版本浏览器的兼容
 import ResizeObserver from 'resize-observer-polyfill'
 window.ResizeObserver = ResizeObserver
