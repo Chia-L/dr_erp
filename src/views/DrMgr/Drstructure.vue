@@ -1,11 +1,9 @@
 <script setup>
-import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <RouterView />
+  <div>容灾架构</div>
 </template>
 
 <style scoped>
-
 </style>

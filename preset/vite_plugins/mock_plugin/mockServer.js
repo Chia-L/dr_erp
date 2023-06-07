@@ -36,6 +36,12 @@ export async function requestMiddleware(opt) {
     const reqUrl = queryParams.pathname
 
     const matchRequest = mockData.find((item) => {
+      if (opt.urlPrefixes) {
+        const baseUrlReg = new RegExp(`^${opt.urlPrefixes}`)
+        if (item.url && !baseUrlReg.test(item.url)) {
+          item.url = item.url ? opt.urlPrefixes + item.url : item.url
+        }
+      }
       if (!reqUrl || !item || !item.url) {
         return false
       }

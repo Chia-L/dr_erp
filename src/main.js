@@ -1,8 +1,10 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import pinia from '@/stores/index'
 
 import App from './App.vue'
 import router from './router'
+import '/src/router/initDynamicRoutes'
+import directives from '@/directives/index'
 
 // vxe-table
 import 'xe-utils'
@@ -25,7 +27,7 @@ import '@/assets/iconfont/iconfont.woff'
 // 自适应
 import "amfe-flexible/index.js";
 
-import "/src/assets/css/comm.css"
+import "/src/assets/css/comm.less"
 
 //element-plus ResizeObserver 低版本浏览器的兼容
 import ResizeObserver from 'resize-observer-polyfill'
@@ -37,7 +39,8 @@ app.use(ViewUIPlus)
 app.use(ElementPlus)
 app.use(VXETable)
 
-app.use(createPinia())
+app.use(pinia)
   .use(router)
+  .use(directives)
 
 app.mount('#app')

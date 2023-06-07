@@ -1,0 +1,38 @@
+{
+  "path": "/dr",
+  "name": "Base",
+  "component": "Base",
+  "redirect": "/dr/home",
+  "meta": {
+    "title": ""
+  },
+  "children": [
+    {
+      "path": "/dr/home",
+      "name": "Home",
+      "component": "Home",
+      "meta": {
+        "title": "首页"
+      }
+    },
+    {
+      "path": "/dr/drmgr",
+      "name": "DrMgr",
+      "component": "DrMgr",
+      "redirect": "/dr/home",
+      "meta": {
+        "title": "容灾管理",
+        "sidebar": [
+          {
+            "path": "/dr/home",
+            "name": "Home",
+            "component": "Home",
+            "meta": {
+              "title": "首页"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

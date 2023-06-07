@@ -14,5 +14,22 @@ module.exports = [
         }
       }
     }
+  },
+  {
+    url: '/api/account/get_user_info/',
+    type: 'POST',
+    response: req => {
+      return {
+        r: 0,
+        e: '',
+        data: {
+          buttons: ['DrMgr.ResourceMgr.DataCenter.new.display', 'DrMgr.ResourceMgr.DataCenter.new.disabled'],
+          routes: [
+            'Home', 'DrMgr', 'DrMgr.DemandMgr', 'DrMgr.ResourceMgr','DrMgr.DemandMgr.DrLevel', 'DrMgr.DemandMgr.DrDemand',
+            'DrMgr.ResourceMgr.DataCenter', 'DrMgr.ResourceMgr.Drstructure'
+          ]
+        }
+      }
+    }
   }
 ]

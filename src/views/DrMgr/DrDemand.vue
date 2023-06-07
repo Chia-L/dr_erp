@@ -1,11 +1,9 @@
 <script setup>
-import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <RouterView />
+  <div>灾备需求</div>
 </template>
 
 <style scoped>
-
 </style>
