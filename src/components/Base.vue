@@ -60,7 +60,7 @@ function onSidebarSelect(path) {
       <header class="clw-header">
         <div class="clw-header-left">
           <div class="clw-header-logo">
-            <img src="/images/logo.png">
+            <img src="/static/images/logo.png">
             <span v-text="productName"></span>
           </div>
           <el-menu

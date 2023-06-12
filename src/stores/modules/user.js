@@ -18,7 +18,7 @@ export const useUserStore = defineStore({
       this.userInfo = userInfo
     },
     async GetInfoAction() {
-      const { data } = await getUserInfo(this.userInfo)
+      const { data } = await getUserInfo(Cookies.get('user'))
       const { buttons, routes } = data
       const authStore = useAuthStore()
       // 存储用户信息
@@ -29,11 +29,11 @@ export const useUserStore = defineStore({
     // 重置
     resetStore() {
       this.$reset()
-      useAuthStore().$reset()
     },
     async userLogout() {
       await logout()
       this.resetStore()
     }
-  }
+  },
+  persist: true,
 })

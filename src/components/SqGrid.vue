@@ -231,7 +231,7 @@ defineExpose({
 .r-table-business-logic {
   height: 100%;
   display: flex;
-  fLex-flow: column nowrap;
+  flex-flow: column nowrap;
 }
 
 .rowHeight .vxe-cell.c--tooltip {

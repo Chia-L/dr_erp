@@ -17,11 +17,13 @@ export default ({ mode }) => {
   const useMock = !!env.VITE_USE_MOCK
 
   return defineConfig({
+    base: './',
+    productionSourceMap: mode !== "production",
     plugins: [
       vue(),
       vueJsx(),
       legacy({
-        targets: ['defaults', 'ie >= 11', 'chrome>=52'], //'> 1%, last 2 version, ie >= 11'
+        targets: ['> 1%', 'last 2 version', 'ie >= 11'],
         additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
         renderLegacyChunks:true,
         polyfills: [
@@ -74,7 +76,20 @@ export default ({ mode }) => {
     },
     server: devCfg,
     build: {
-      target: 'es2015'
+      target: 'es2015',
+      outDir: "dist",
+      assetsDir: "static",
+      sourcemap: false,
+      minify: "terser",
+      chunkSizeWarningLimit: 1500,
+      terserOptions: {
+        compress: {
+          drop_debugger: true  // 生产环境取消debugger
+        },
+        output: {
+          comments: true, // 去掉注释内容
+        },
+      },
     }
   })
 }

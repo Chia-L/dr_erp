@@ -51,7 +51,7 @@
 
 <script setup>
 import { JTree } from '@/utils/treeHelper.js'
-import { usePlanManageStore } from '@/stores/planManageStore.js'
+import { usePlanManageStore } from '@/stores/modules/planManageStore.js'
 import { cloneDeep } from 'lodash'
 import XEUtils from 'xe-utils'
 import { ref, watch, onMounted, nextTick, reactive } from 'vue'

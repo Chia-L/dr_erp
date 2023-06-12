@@ -33,6 +33,11 @@ import "/src/assets/css/comm.less"
 import ResizeObserver from 'resize-observer-polyfill'
 window.ResizeObserver = ResizeObserver
 
+window.addEventListener('unhandledrejection', event=>{
+    console.error('Unhandled rejection: ' + event.reason, event)
+  }
+)
+
 const app = createApp(App)
 
 app.use(ViewUIPlus)
