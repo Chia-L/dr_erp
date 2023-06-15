@@ -11,6 +11,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "@formily/core": "^2.2.24",
     "@formily/element-plus": "^1.1.0-beta.0",
     "@formily/vue": "^2.2.24",

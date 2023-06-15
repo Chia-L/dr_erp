@@ -90,6 +90,26 @@ export default ({ mode }) => {
           comments: true, // 去掉注释内容
         },
       },
+      rollupOptions: {
+        output: {
+          chunkFileNames: "static/js/[name]-[hash].js",
+          entryFileNames: "static/js/[name]-[hash].js",
+          assetFileNames: "static/[ext]/[name]-[hash].[ext]",
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (!["@cool-vue/crud"].find((e) => id.includes(e))) {
+                let str = id.toString().split("node_modules/")[1];
+
+                if (str[0] == "@") {
+                  str = str.replace("/", ".");
+                }
+
+                return str.split("/")[0].toString();
+              }
+            }
+          }
+        }
+      }
     }
   })
 }
