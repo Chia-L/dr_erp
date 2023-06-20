@@ -53,13 +53,19 @@ export const authDisable = {
     const { value } = binding
     const authStore = useAuthStore()
     const currentPageRoles = authStore.authButtonList ?? []
+    let hasPermission = false
     if (value instanceof Array && value.length) {
-      const hasPermission = value.every(item =>
+      hasPermission = value.every(item =>
         currentPageRoles.includes(item),
       )
-      el.setAttribute("disabled", hasPermission)
+
+
     } else {
-      el.setAttribute("disabled", currentPageRoles.includes(value))
+      hasPermission = currentPageRoles.includes(value)
     }
+    el.setAttribute("disabled", hasPermission)
+    const className = 'is-disabled'
+    if (hasPermission) el.classList.add(className)
+    else el.classList.add(className)
   },
 }

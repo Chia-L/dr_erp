@@ -1,11 +1,13 @@
 <script setup>
-import { ref, computed, unref, watch, onMounted, onBeforeMount, defineExpose } from 'vue';
+import { ref, computed, unref, watch, onMounted, onBeforeMount } from 'vue';
+import { Button } from 'view-ui-plus'
 import { isBoolean } from 'lodash'
 const inputValue = ref('')
 const checkError = ref('')
 const isClickConfirm = ref(false)
 const buttonRef = ref()
 const popoverRef = ref()
+let visibleRef = ref(false)
 const props = defineProps({
   /* input框多选项数据 */
   itemList: {
@@ -110,18 +112,21 @@ function clearAll() {
 }
 /* 打开筛选框 */
 function openPop() {
-  unref(popoverRef).popperRef?.delayHide?.()
+  visibleRef.value = !visibleRef.value
+  // unref(popoverRef).popperRef?.delayHide?.()
 }
 /* 取消方法 */
 function doCancel() {
+  visibleRef.value = false
   emit('do-reduction') /* 还原到初始状态 */
-  unref(popoverRef).hide()
+  // unref(popoverRef).hide()
 }
 /* 确定按钮方法 */
 function doConfirm() {
   isClickConfirm.value = true
+  visibleRef.value = false
   emit('do-confirm')
-  unref(popoverRef).hide()
+  // unref(popoverRef).hide()
 }
 /* pop显示事件 */
 function popShow() {
@@ -172,7 +177,7 @@ defineExpose({
       </div>
       <div class="tailWrap" ref="buttonRef" @click="openPop">
         <span>过滤</span>
-        <Icon type="md-arrow-dropdown" />
+        <i class="iconfont i-caret-bottom"></i>
       </div>
     </div>
     <el-popover
@@ -180,6 +185,7 @@ defineExpose({
         trigger="click"
         placement="bottom-end"
         virtual-triggering
+        :visible="visibleRef"
         :virtual-ref="buttonRef"
         :width="vPopoverWidth"
         :popper-class="popClassName"
@@ -190,8 +196,8 @@ defineExpose({
       </div>
       <div class="clw-btn filter-popover-btn">
         <slot name="popover-bottom" :data="{doCancel: doCancel, doConfirm: doConfirm}">
-          <i-button type="text" @click="doCancel">取消</i-button>
-          <i-button type="primary" @click="doConfirm">确定</i-button>
+          <Button type="text" @click="doCancel">取消</Button>
+          <Button type="primary" @click="doConfirm">确定</Button>
         </slot>
       </div>
     </el-popover>
@@ -300,11 +306,8 @@ defineExpose({
   display: flex;
   align-items: center;
   cursor: pointer;
-  width: 45px;
   color: #17A2BB;
-}
-.clw-filter .inputWrap .tailWrap span{
-  width: 30px;
+  margin-right: 5px;
 }
 .filter-popover {
   margin-top: 2px!important;

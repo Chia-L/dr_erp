@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import '/src/router/initDynamicRoutes'
 import directives from '@/directives/index'
+import uiConfig from '/public/static/config/uiConfig'
 
 // vxe-table
 import 'xe-utils'
@@ -14,10 +15,13 @@ import VXETable from 'vxe-table'
 // element-plus
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
 
 // view-ui-plus
 import 'view-ui-plus/dist/styles/viewuiplus.css'
-import ViewUIPlus from 'view-ui-plus'
+// import ViewUIPlus from 'view-ui-plus'
 
 import '@/assets/iconfont/iconfont.css'
 import '@/assets/iconfont/iconfont.js'
@@ -33,15 +37,18 @@ import "/src/assets/css/comm.less"
 import ResizeObserver from 'resize-observer-polyfill'
 window.ResizeObserver = ResizeObserver
 
-window.addEventListener('unhandledrejection', event=>{
-    console.error('Unhandled rejection: ' + event.reason, event)
-  }
-)
-
 const app = createApp(App)
 
-app.use(ViewUIPlus)
-app.use(ElementPlus)
+app.config.globalProperties.__drParams = Object.freeze(uiConfig)
+document.title = uiConfig.title
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
+
+app.use(ElementPlus, {
+  locale: zhCn,
+})
 app.use(VXETable)
 
 app.use(pinia)

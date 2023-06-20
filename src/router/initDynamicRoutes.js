@@ -107,6 +107,7 @@ function filterAsyncRoutes(dynamicRoutes, authRouterList) {
 function getMenuList(routerList, basePath) {
   const menus = makeMeta(routerList)
   const target = (menus.find(menu => menu.path === basePath )?.children) ?? []
+  formatMenu(target)
   return target
 }
 
@@ -116,6 +117,7 @@ function getMenuList(routerList, basePath) {
  * @returns {*}
  */
 function makeMeta(list) {
+  if (list.length === 0) return []
   for (let i = 0; i < list.length; i++ ) {
     const route = list[i]
     // 判断是否存在children，没有（或者为空）就放过，继续迭代下一个
@@ -157,4 +159,29 @@ function makeMeta(list) {
     makeMeta(route.children)
   }
   return list
+}
+
+function formatMenu(data, prePath = [], isInnerSidebar = false) {
+  function formatProty (obj,  path = null) {
+    if (!obj.meta) obj.meta = {}
+    if (!obj.meta.pathList) obj.meta.pathList = cloneDeep(prePath)
+    obj.meta.pathList.push({label: obj?.meta?.title, path: path || obj.path})
+  }
+
+  if (returnType(data) === 'array') {
+    if (data.length === 0) return []
+    data.forEach(item => {
+      if (isInnerSidebar && returnType(item.children) === 'array' && item.children.length) {
+        const path = item.children[0].path
+        formatProty(item, path)
+        formatMenu(item.children, cloneDeep(item.meta.pathList), false)
+      }else {
+        formatProty(item, null)
+      }
+
+      if (returnType(item.meta?.sidebar) === 'array' && item.meta.sidebar.length) {
+        formatMenu(item.meta.sidebar, item.meta.pathList, true)
+      }
+    })
+  }
 }

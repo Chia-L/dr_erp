@@ -1,28 +1,37 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/modules/user'
 import { useAuthStore } from '@/stores/modules/auth'
+import useGlobalProperties from '@/hooks/globalVar'
 import RecElSubMenu from 'comps/RecElSubMenu.vue'
 import moment from 'moment'
+import {ElMessage} from "element-plus";
+import { httpHelper } from "@/utils/httpHelper";
 
+const userStore = useUserStore()
 const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
-const productName = "科力锐灾备云"
+const { baseLogo, baseLogoHeight, productName} = useGlobalProperties().__drParams
+const todoNumRef = ref(2)
+const timerRef = ref({
+  notice: null,
+  sys: null
+})
 const serverTime = ref(moment().format('YYYY-MM-DD HH:mm:ss'))
 setInterval(() => {
   serverTime.value = moment().format('YYYY-MM-DD HH:mm:ss')
 }, 1 * 1000)
-
 const menus = authStore.authMenuList
 
+/* computed */
 const defNavRef = computed(()  => {
   let { path } = route
   path = '/' + path.split('/').slice(1, 3).join('/')
   return path
 })
-
 const defSidebar = computed(() => {
   return route.path
 })
@@ -52,6 +61,57 @@ function onNavSelect(path) {
 function onSidebarSelect(path) {
   path && router.push({path: path})
 }
+
+/**
+ * @description 登出
+ */
+function onLogout() {
+  httpHelper('/api/account/logout/', 'POST').then(res => {
+    if (Number(res.r) !== 0) {
+      return ElMessage.error(res.e)
+    }
+    userStore.resetStore()
+    router.push('/login')
+  })
+}
+
+/**
+ * 获取消息
+ */
+function getNotice() {
+  clearTimeout(timerRef.value.notice)
+  timerRef.value.notice = null
+  timerRef.value.notice = setTimeout(() => {
+    httpHelper('/api/account/fetch_notice/', 'POST')
+      .then(res => {
+        if (Number(res.r) !== 0) return ElMessage.error(res.e)
+        todoNumRef.value = (res.data?.list?.length ?? 0)
+      })
+      .catch(console.error)
+      .finally(() => {
+        // getNotice()
+      })
+  },10 * 1000)
+}
+
+/**
+ * 获取系统时间
+ */
+function getSysTime() {
+
+}
+
+onMounted(() => {
+  getNotice()
+  getSysTime()
+})
+
+onUnmounted(() => {
+  Object.keys(timerRef.value).forEach(key => {
+    clearTimeout(timerRef.value[key])
+    timerRef.value[key] = null
+  })
+})
 </script>
 
 <template>
@@ -60,7 +120,7 @@ function onSidebarSelect(path) {
       <header class="clw-header">
         <div class="clw-header-left">
           <div class="clw-header-logo">
-            <img src="/static/images/logo.png">
+            <img :src="baseLogo" :height="baseLogoHeight">
             <span v-text="productName"></span>
           </div>
           <el-menu
@@ -69,15 +129,34 @@ function onSidebarSelect(path) {
             mode="horizontal"
             @select="onNavSelect"
           >
-            <el-menu-item v-for="(menu, index) in menus"
+            <el-menu-item v-for="menu in menus"
                           :index="menu.id"
+                          :key="menu.id"
                           v-text="menu?.meta?.title"></el-menu-item>
           </el-menu>
         </div>
         <div class='clw-header-right'>
-          消息
+          <el-badge class="header-msg-icon" :value="todoNumRef" :max="99"
+                    v-show="todoNumRef !== 0"
+                    :style="{marginRight: todoNumRef * 0.1 + 4 + 'px'}">
+            <i class="iconfont i-notice info-f20 iconfont-wode"></i>
+          </el-badge>
+          <i class="iconfont i-notice info-f20 iconfont-wode" v-show="todoNumRef === 0"></i>
           <el-divider direction="vertical" />
-          用户
+          <el-dropdown trigger="click"
+                       class="user-view"
+                       popper-class="no-el-popper__arrow">
+            <span class="el-dropdown-link">
+              <i class="iconfont i-personal-center"></i>
+              <span v-text="userStore.user"></span>
+              <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="onLogout">登出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
           <el-divider direction="vertical" />
           <span>服务时间：<span v-text="serverTime"></span></span>
         </div>
@@ -100,7 +179,6 @@ function onSidebarSelect(path) {
           <router-view></router-view>
         </main>
       </section>
-
     </section>
   </div>
 </template>
@@ -154,13 +232,19 @@ function onSidebarSelect(path) {
 .clw-sidebar.el-menu .el-menu-item:hover {
   background-color: #1B454D;
 }
+.no-el-popper__arrow {
+  margin-top: -4px;
+  .el-popper__arrow {
+    display: none;
+  }
+}
 </style>
 <style scoped lang="less">
 .clw-view {
   width: 100vw;
   height: 100vh;
-  min-width: 1360px;
-  min-height: 860px;
+  min-width: @page-min-width;
+  min-height: @page-min-height;
   section {
     height: 100%;
   }
@@ -194,6 +278,17 @@ function onSidebarSelect(path) {
           font-size: 14px;
           font-weight: bolder;
           margin-left: 10px;
+        }
+      }
+      .user-view {
+        :deep(.el-dropdown-link) {
+          display: flex;
+          align-items: center;
+          color: #E8EAEC;
+          i.i-personal-center {
+            margin-right: 5px;
+            font-size: 18px;
+          }
         }
       }
     }

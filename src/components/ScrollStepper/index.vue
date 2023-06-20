@@ -433,7 +433,7 @@ function stepValidFail(msg) {
  * 验证失败回调
  */
 function validFailedCb() {
-  validLocalFormData().then(stepValidOk, stepValidFail).catch(e => {})
+  validLocalFormData().then(stepValidOk, stepValidFail).catch(console.error)
 }
 
 /**
@@ -520,7 +520,7 @@ function finishStepper() {
     closeStepper()
   }).finally(() => {
     useChangeMainLoading(false)
-  }).catch(e => {})
+  }).catch(console.error)
 }
 
 /* 生命周期 */

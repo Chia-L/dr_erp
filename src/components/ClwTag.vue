@@ -50,6 +50,7 @@ let tagHeight = computed(() => {
   cursor: pointer;
   padding: 0 10px;
   border-radius: 2px;
+  display: inline-block;
 }
 
 .clw-tag + .clw-tag {

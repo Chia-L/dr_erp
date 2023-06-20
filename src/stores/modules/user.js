@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
-import { logout, getUserInfo } from 'apis/login'
+import { httpHelper } from '@/utils/httpHelper'
 import { useAuthStore } from './auth'
+import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore({
   id: 'user-store',
   state: () => ({
-    token: 'aaa',
-    userInfo: null,
+    token: null,
+    user: null
   }),
   actions: {
     // 设置token
@@ -14,25 +15,32 @@ export const useUserStore = defineStore({
       this.token = token
     },
     // 设置用户信息
-    setUserInfo(userInfo) {
-      this.userInfo = userInfo
+    setUserInfo(user) {
+      this.user = user
     },
     async GetInfoAction() {
-      const { data } = await getUserInfo(Cookies.get('user'))
+      const user = await httpHelper('/api/menu/fetch/', 'POST').catch((e => {throw new Error(e)}))
+      const { data } = user
       const { buttons, routes } = data
       const authStore = useAuthStore()
-      // 存储用户信息
-      this.setUserInfo(this.userInfo)
       // 存储用户权限信息
       authStore.setAuth({ buttons, routes })
     },
     // 重置
     resetStore() {
       this.$reset()
+      useAuthStore().$reset()
+      useAuthStore().$reset()
+      this.clearCookie()
+      localStorage.clear()
     },
-    async userLogout() {
-      await logout()
-      this.resetStore()
+    clearCookie() {
+      Cookies.remove('sessionid')
+      var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+      if(keys) {
+        for(let i = keys.length; i--;)
+          document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+      }
     }
   },
   persist: true,

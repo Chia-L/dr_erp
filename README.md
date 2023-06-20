@@ -41,9 +41,11 @@ npm run dock
 
 1.所有滚动使用element的虚拟滚动，组件内的系统动统一使用一个类名
 
-#### api
+#### ui库
 
-> 位置：放在`src\aips`
+1. 表格使用vxe-table；
+2. msgbox类弹窗使用`src/components/VxeBasicDlgComp.vue`，其余弹窗使用element-plus的；
+3. 非必要尽量不要使用view-ui-plus库，使用时，按需引用。
 
 ### 技术
 

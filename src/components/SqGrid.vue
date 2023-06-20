@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineExpose } from 'vue'
+import { ref } from 'vue'
 
 // 声明props
 const props = defineProps({

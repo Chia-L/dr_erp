@@ -1,11 +1,14 @@
 <script setup>
 import { ref, reactive, watchEffect } from 'vue'
-
 const emit = defineEmits(['show', 'hide', 'handleClose'])
 const props = defineProps({
   width: {
     type: [Number, String],
     default: 600
+  },
+  dlgClassName: {
+    type: String,
+    default: ''
   },
   title: {
     type: String,
@@ -39,13 +42,13 @@ const props = defineProps({
   },
   onConfirm: {
     type: Function,
-    default: function (close, params) {
+    default: function (close) {
       close()
     }
   },
   onCancel: {
     type: Function,
-    default: function (close, params) {
+    default: function (close) {
       close()
     }
   },
@@ -68,7 +71,7 @@ watchEffect(() => {
 
 function openDlg(bool, param) {
   visible.value = bool
-  params.data = Object.assign(params.data, param)
+  params.data = Object.assign(params.data, param || {})
   return Promise.resolve()
 }
 function close () {
@@ -92,6 +95,7 @@ defineExpose({
 <template>
   <vxe-modal v-model="visible"
              :width="width"
+             :class-name="'clw-model ' + dlgClassName"
              show-footer
              @show="show"
              @hide="hide"
@@ -106,12 +110,12 @@ defineExpose({
       </div>
     </template>
     <template #footer>
-      <slot name='"footer'>
+      <slot name='footer'>
         <div class="flex space-between">
           <span class="error" v-text="errorMsg"></span>
           <div class="flex clw-btn">
-            <i-button class="mr15" type="primary" :disabled="isLoading || isDisabled" @click="onConfirm(close, params.data)">{{enter}}</i-button>
-            <i-button type="text" v-show="showCancel" @click="onCancel(close, params.data)">取消</i-button>
+            <el-Button type="primary" :disabled="isLoading || isDisabled" @click="onConfirm(close, params.data)">{{enter}}</el-Button>
+            <el-Button type="primary" text v-show="showCancel" @click="onCancel(close, params.data)">取消</el-Button>
           </div>
         </div>
       </slot>
@@ -119,6 +123,12 @@ defineExpose({
   </vxe-modal>
 </template>
 
+<style>
+.clw-model.vxe-modal--wrapper .vxe-modal--footer {
+  padding: .6em 1em!important;
+  border-top: 1px solid #ebeef5;
+}
+</style>
 <style scoped>
 .flex {
   display: flex;
@@ -132,8 +142,5 @@ defineExpose({
 }
 .error {
   color: #f56c6c;
-}
-.mr15{
-  margin-right: 15px;
 }
 </style>

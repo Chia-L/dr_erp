@@ -23,7 +23,7 @@ export default ({ mode }) => {
       vue(),
       vueJsx(),
       legacy({
-        targets: ['> 1%', 'last 2 version', 'ie >= 11'],
+        targets: ['defaults', 'ie >= 11', 'chrome>=52'], //'> 1%, last 2 version, ie >= 11'
         additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
         renderLegacyChunks:true,
         polyfills: [
@@ -92,24 +92,25 @@ export default ({ mode }) => {
       },
       rollupOptions: {
         output: {
-          chunkFileNames: "static/js/[name]-[hash].js",
-          entryFileNames: "static/js/[name]-[hash].js",
-          assetFileNames: "static/[ext]/[name]-[hash].[ext]",
+          chunkFileNames: 'static/js/[name]-[hash].js',
+          entryFileNames: 'static/js/[name]-[hash].js',
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
           manualChunks(id) {
-            if (id.includes("node_modules")) {
-              if (!["@cool-vue/crud"].find((e) => id.includes(e))) {
+            if (id.includes('node_modules')) {
+              if (!['@cool-vue/crud'].find((e) => id.includes(e))) {
                 let str = id.toString().split("node_modules/")[1];
-
                 if (str[0] == "@") {
                   str = str.replace("/", ".");
                 }
-
                 return str.split("/")[0].toString();
               }
             }
           }
         }
       }
+    },
+    define: {
+      'process.env': env
     }
   })
 }
